@@ -60,4 +60,17 @@ class LoginViewModel @Inject constructor(
         )
 
     }
+
+    fun onSignInGuestClick(openAndPopUp: (String, String) -> Unit){
+        viewModelScope.launch(
+            CoroutineExceptionHandler { _, throwable ->
+                SnackbarManager.showMessage(throwable.toSnackbarMessage())
+            },
+            block = {
+                accountService.createAnonymousAccount()
+                openAndPopUp(DASHBOARD_SCREEN, LOGIN_SCREEN)
+            }
+        )
+
+    }
 }

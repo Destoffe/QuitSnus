@@ -23,9 +23,8 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) :Ac
     override val hasUser: Boolean
         get() = auth.currentUser != null
 
-    override suspend fun createAnonymousAccount(onResult: (Throwable?) -> Unit) {
-        auth.signInAnonymously()
-            .addOnCompleteListener { onResult(it.exception) }
+    override suspend fun createAnonymousAccount() {
+        auth.signInAnonymously().await()
     }
 
     override suspend fun authenticate(email: String, password: String) {

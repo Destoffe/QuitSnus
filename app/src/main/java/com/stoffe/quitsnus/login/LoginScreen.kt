@@ -32,8 +32,10 @@ fun LoginScreen(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSignInClick = { viewModel.onSignInClick(openAndPopUp) }) {
-    }
+        onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
+        onSignInGuestClick = {viewModel.onSignInGuestClick(openAndPopUp)}
+        ){}
+
 
 }
 
@@ -44,6 +46,7 @@ fun LoginScreenContent(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
+    onSignInGuestClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ){
     BasicToolBar(title = "Login")
@@ -67,6 +70,10 @@ fun LoginScreenContent(
         )
         BasicButton(text = "Sign in") {
             onSignInClick()
+        }
+
+        BasicButton(text = "Use app as Guest") {
+            onSignInGuestClick()
         }
     }
 }

@@ -8,7 +8,7 @@ interface AccountService {
 
     val hasUser: Boolean
 
-    suspend fun createAnonymousAccount(onResult: (Throwable?) -> Unit)
+    suspend fun createAnonymousAccount()
     suspend fun authenticate(email: String, password: String)
     suspend fun linkAccount(email: String, password: String, onResult: (Throwable?) -> Unit)
 
