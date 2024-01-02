@@ -1,5 +1,6 @@
 package com.stoffe.quitsnus.ui.composable
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.stoffe.quitsnus.R
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
 
@@ -86,7 +88,7 @@ fun NumberEditField(
         label = { Text(text = label)},
         onValueChange = {onNewValue(it)},
         placeholder = { Text("Email")},
-        leadingIcon = {Icon(imageVector = Icons.Default.Person,contentDescription = "Email")},
+        leadingIcon = {Icon(painter = painterResource(id = R.drawable.prilla),contentDescription = "Email",modifier = Modifier.size(24.dp)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     )
 }
