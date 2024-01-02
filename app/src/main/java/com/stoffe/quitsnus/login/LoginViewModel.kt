@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.stoffe.quitsnus.common.isValidEmail
 import com.stoffe.quitsnus.data.LoginUiState
 import com.stoffe.quitsnus.misc.AccountService
+import com.stoffe.quitsnus.ui.composable.SnackbarManager
+import com.stoffe.quitsnus.ui.composable.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,8 +46,14 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
-            accountService.authenticate(email = email,password = password)
-        }
+        viewModelScope.launch(
+            CoroutineExceptionHandler { _, throwable ->
+                SnackbarManager.showMessage(throwable.toSnackbarMessage())
+            },
+            block = {
+                accountService.authenticate(email = email,password = password)
+            }
+        )
+
     }
 }

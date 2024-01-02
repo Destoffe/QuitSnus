@@ -1,32 +1,31 @@
 package com.stoffe.quitsnus
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.compose.ui.unit.dp
 import com.stoffe.quitsnus.login.LoginScreen
+import com.stoffe.quitsnus.ui.composable.SnackbarManager
+import com.stoffe.quitsnus.ui.composable.SnackbarMessage.Companion.toMessage
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,23 +35,40 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
+            val snackbarHostState = remember { SnackbarHostState() }
+
+            val appState = rememberAppState(snackbarHostState = snackbarHostState)
+
             QuitSnusTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(
-                        openAndPopUp = {email, password -> }
-                    )
+                    Scaffold(
+                        snackbarHost = {
+                            SnackbarHost(
+                                hostState = appState.snackBarHostState,
+                                modifier = Modifier.padding(8.dp),
+                                snackbar = {
+                                    Snackbar(snackbarData = it)
+                                }
+                            )
+                        },
+
+                        ) {
+
+                        LoginScreen(
+                            modifier = Modifier.padding(it),
+                            openAndPopUp = { email, password -> }
+                        )
+                    }
                 }
             }
         }
+
     }
 }
-
-
-
 
 
 @Composable

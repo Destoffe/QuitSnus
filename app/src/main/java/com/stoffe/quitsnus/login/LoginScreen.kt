@@ -13,11 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stoffe.quitsnus.common.fieldModifier
 import com.stoffe.quitsnus.data.LoginUiState
+import com.stoffe.quitsnus.ui.composable.BasicButton
 import com.stoffe.quitsnus.ui.composable.BasicToolBar
 import com.stoffe.quitsnus.ui.composable.EmailField
+import com.stoffe.quitsnus.ui.composable.PasswordField
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     openAndPopUp: (String, String) -> Unit,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
@@ -25,11 +28,11 @@ fun LoginScreen(
     val uiState by viewModel.uiState
     
     LoginScreenContent(
+        modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onSignInClick = { viewModel.onSignInClick(openAndPopUp) }) {
-        
     }
 
 }
@@ -57,5 +60,13 @@ fun LoginScreenContent(
             onNewValue = onEmailChange,
             modifier = Modifier.fieldModifier()
         )
+        PasswordField(
+            value = uiState.password,
+            onNewValue = onPasswordChange,
+            modifier = Modifier.fieldModifier()
+        )
+        BasicButton(text = "Sign in") {
+            onSignInClick()
+        }
     }
 }
