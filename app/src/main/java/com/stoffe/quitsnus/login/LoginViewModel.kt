@@ -3,6 +3,8 @@ package com.stoffe.quitsnus.login
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stoffe.quitsnus.DASHBOARD_SCREEN
+import com.stoffe.quitsnus.LOGIN_SCREEN
 import com.stoffe.quitsnus.common.isValidEmail
 import com.stoffe.quitsnus.data.LoginUiState
 import com.stoffe.quitsnus.misc.AccountService
@@ -52,6 +54,7 @@ class LoginViewModel @Inject constructor(
             },
             block = {
                 accountService.authenticate(email = email,password = password)
+                openAndPopUp(DASHBOARD_SCREEN, LOGIN_SCREEN)
             }
         )
 
