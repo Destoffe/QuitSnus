@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stoffe.quitsnus.common.fieldModifier
-import com.stoffe.quitsnus.data.LoginUiState
 import com.stoffe.quitsnus.ui.composable.BasicButton
 import com.stoffe.quitsnus.ui.composable.BasicToolBar
 import com.stoffe.quitsnus.ui.composable.EmailField
@@ -34,7 +33,7 @@ fun LoginScreen(
         onPasswordChange = viewModel::onPasswordChange,
         onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
         onSignInGuestClick = {viewModel.onSignInGuestClick(openAndPopUp)}
-        ){}
+        )
 
 
 }
@@ -47,7 +46,6 @@ fun LoginScreenContent(
     onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
     onSignInGuestClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
 ){
     BasicToolBar(title = "Login")
     Column(

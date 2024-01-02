@@ -20,6 +20,7 @@ import com.stoffe.quitsnus.dashboard.DashboardScreen
 import com.stoffe.quitsnus.login.LoginScreen
 import com.stoffe.quitsnus.settings.SettingsScreen
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
+import com.stoffe.quitsnus.userinfo.UserInfoScreen
 
 
 @Composable
@@ -68,5 +69,9 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
 
     composable(SETTINGS_SCREEN) {
         SettingsScreen(restartApp = { route -> appState.clearAndNavigate(route) })
+    }
+
+    composable(USER_INFO_SCREEN) {
+        UserInfoScreen(popUpScreen = { appState.popUp() })
     }
 }

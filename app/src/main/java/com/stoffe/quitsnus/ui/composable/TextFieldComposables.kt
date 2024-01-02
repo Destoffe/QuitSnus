@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -38,8 +39,6 @@ fun EmailField(
     )
 }
 
-
-
 @Composable
  fun PasswordField(
     value: String,
@@ -71,6 +70,25 @@ fun EmailField(
 
     )
         
+}
+
+@Composable
+fun NumberEditField(
+    value: String,
+    onNewValue:  (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String,
+){
+    OutlinedTextField(
+        singleLine = true,
+        modifier = modifier,
+        value = value,
+        label = { Text(text = label)},
+        onValueChange = {onNewValue(it)},
+        placeholder = { Text("Email")},
+        leadingIcon = {Icon(imageVector = Icons.Default.Person,contentDescription = "Email")},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    )
 }
 
 @Composable

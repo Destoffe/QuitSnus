@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.stoffe.quitsnus.DASHBOARD_SCREEN
 import com.stoffe.quitsnus.LOGIN_SCREEN
 import com.stoffe.quitsnus.common.isValidEmail
-import com.stoffe.quitsnus.data.LoginUiState
 import com.stoffe.quitsnus.misc.AccountService
 import com.stoffe.quitsnus.ui.composable.SnackbarManager
 import com.stoffe.quitsnus.ui.composable.SnackbarMessage

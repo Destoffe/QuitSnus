@@ -1,4 +1,4 @@
-package com.stoffe.quitsnus.data
+package com.stoffe.quitsnus.login
 
 import com.stoffe.quitsnus.ui.composable.SnackbarManager
 
