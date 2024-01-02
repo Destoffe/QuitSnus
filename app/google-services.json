@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "527108013599",
+    "project_id": "quitsnus",
+    "storage_bucket": "quitsnus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527108013599:android:91fe418a6dfb3a7adf5f2a",
+        "android_client_info": {
+          "package_name": "com.stoffe.quitsnus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527108013599-9dvnr8r40qkah4lsgm5cfoq5ia8o3cp9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stoffe.quitsnus",
+            "certificate_hash": "2e2acdca2f884cb97ee47e579e37f313fbdd9abd"
+          }
+        },
+        {
+          "client_id": "527108013599-e62c5pk6suig5hfg27tl11sgfajgsno2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvEcbIcx7rtW94kWuocbxtXKWtm8fs1_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527108013599-e62c5pk6suig5hfg27tl11sgfajgsno2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
