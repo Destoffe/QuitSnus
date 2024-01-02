@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.stoffe.quitsnus.dashboard.DashboardScreen
 import com.stoffe.quitsnus.login.LoginScreen
+import com.stoffe.quitsnus.settings.SettingsScreen
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
 
 
@@ -63,5 +64,9 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
 
     composable(DASHBOARD_SCREEN) {
         DashboardScreen(openScreen = { route -> appState.navigate(route) })
+    }
+
+    composable(SETTINGS_SCREEN) {
+        SettingsScreen(restartApp = { route -> appState.clearAndNavigate(route) })
     }
 }

@@ -38,4 +38,12 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) :Ac
        auth.currentUser!!.linkWithCredential(credential)
             .addOnCompleteListener { onResult(it.exception) }
     }
+
+    override suspend fun signOut() {
+        if (auth.currentUser!!.isAnonymous) {
+            auth.currentUser!!.delete()
+        }
+        auth.signOut()
+
+    }
 }
