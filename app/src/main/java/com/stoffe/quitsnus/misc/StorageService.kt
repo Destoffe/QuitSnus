@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface StorageService {
     val userInfo: Flow<List<UserInfo>>
+    val userInfoTest: Flow<UserInfo?>
     suspend fun getUserInfo(userInfoID: String): UserInfo?
     suspend fun save(userInfo: UserInfo): String
     suspend fun update(userInfo: UserInfo)

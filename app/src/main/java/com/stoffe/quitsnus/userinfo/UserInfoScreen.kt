@@ -13,13 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stoffe.quitsnus.common.fieldModifier
-import com.stoffe.quitsnus.login.LoginUiState
-import com.stoffe.quitsnus.login.LoginViewModel
+import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.BasicButton
 import com.stoffe.quitsnus.ui.composable.BasicToolBar
-import com.stoffe.quitsnus.ui.composable.EmailField
 import com.stoffe.quitsnus.ui.composable.NumberEditField
-import com.stoffe.quitsnus.ui.composable.PasswordField
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
 
 @Composable
@@ -28,21 +25,22 @@ fun UserInfoScreen(
     popUpScreen: () -> Unit,
 ){
 
-    val uiState by viewModel.uiState
+    val uiState by viewModel.userInfo
+
 
     UserInfoScreenContent(
         uiState = uiState,
         onDoserPerDagChange = { doser -> viewModel.onDoserPerDagChange(doser) },
         onPrillorPerDosaChange = { prillor -> viewModel.onPrillorPerDosaChange(prillor) },
         onPrisPerDosaPerDosaChange = { prisPer -> viewModel.onPrisPerDosaPerDosaChange(prisPer) },
-        onSaveClick = {viewModel.onSaveInClick { s, s2 ->  } }
+        onSaveClick =  {viewModel.onSaveInClick(popUpScreen)}
     )
 }
 
 @Composable
 fun UserInfoScreenContent(
     modifier: Modifier = Modifier,
-    uiState: UserInfoUiState,
+    uiState: UserInfo,
     onDoserPerDagChange: (String) -> Unit,
     onPrillorPerDosaChange: (String) -> Unit,
     onPrisPerDosaPerDosaChange: (String) -> Unit,

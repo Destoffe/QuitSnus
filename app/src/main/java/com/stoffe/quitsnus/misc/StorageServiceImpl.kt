@@ -8,6 +8,7 @@ import com.stoffe.quitsnus.data.UserInfo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,13 +27,27 @@ class StorageServiceImpl @Inject constructor(
             auth.currentUser.flatMapLatest { user ->
                 firestore
                     .collection(USER_INFO)
-                    .whereEqualTo(USER_ID_FIELD,user.id)
+                    .whereEqualTo(USER_ID_FIELD, user.id)
                     .orderBy(CREATED_AT_FIELD, Query.Direction.DESCENDING)
                     .dataObjects()
             }
 
     override suspend fun getUserInfo(userInfoID: String): UserInfo? =
         firestore.collection(USER_INFO).document(userInfoID).get().await().toObject(UserInfo::class.java)
+
+
+    override val userInfoTest: Flow<UserInfo?>
+        get() = flow {
+            auth.currentUser.collect { user ->
+                val userInfo = firestore
+                    .collection(USER_INFO)
+                    .document()
+                    .get()
+                    .await()
+                    .toObject(UserInfo::class.java)
+                emit(userInfo)
+            }
+        }
 
 
     override suspend fun save(userInfo: UserInfo): String =
@@ -43,7 +58,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun update(userInfo: UserInfo) {
         trace(UPDATE_USER_INFO_TRACE) {
-            firestore.collection(USER_INFO).document(userInfo.id).set(userInfo).await()
+            firestore.collection(USER_INFO).document(userInfo.id!!).set(userInfo).await()
         }
     }
 

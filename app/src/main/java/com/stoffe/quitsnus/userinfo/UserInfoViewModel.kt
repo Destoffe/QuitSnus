@@ -3,13 +3,10 @@ package com.stoffe.quitsnus.userinfo
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stoffe.quitsnus.DASHBOARD_SCREEN
-import com.stoffe.quitsnus.LOGIN_SCREEN
-import com.stoffe.quitsnus.common.isValidEmail
-import com.stoffe.quitsnus.login.LoginUiState
+import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.misc.AccountService
+import com.stoffe.quitsnus.misc.StorageService
 import com.stoffe.quitsnus.ui.composable.SnackbarManager
-import com.stoffe.quitsnus.ui.composable.SnackbarMessage
 import com.stoffe.quitsnus.ui.composable.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,41 +15,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val storageService: StorageService
 
 ) : ViewModel() {
+
+    val userInfo = mutableStateOf(UserInfo())
     var uiState = mutableStateOf(UserInfoUiState())
         private set
 
     private val doserPerDag
-        get() = uiState.value.doserPerDag
+        get() = uiState.value.userInfo.doserPerDag
 
     private val prillorPerDosa
-        get() = uiState.value.prillorPerDosa
+        get() = uiState.value.userInfo.prillorPerDosa
 
     private val prisPerDosa
-        get() = uiState.value.prisPerDosa
+        get() = uiState.value.userInfo.prisPerDosa
 
     fun onDoserPerDagChange(newValue: String) {
-        uiState.value = uiState.value.copy(doserPerDag = newValue.toDouble())
+        userInfo.value = userInfo.value.copy(doserPerDag = newValue)
     }
 
     fun onPrillorPerDosaChange(newValue: String) {
-        uiState.value = uiState.value.copy(prillorPerDosa = newValue.toInt())
+        userInfo.value = userInfo.value.copy(prillorPerDosa = newValue)
     }
 
     fun onPrisPerDosaPerDosaChange(newValue: String) {
-        uiState.value = uiState.value.copy(prisPerDosa = newValue.toDouble())
+        userInfo.value = userInfo.value.copy(prisPerDosa = newValue)
     }
 
-    fun onSaveInClick(openAndPopUp: (String, String) -> Unit){
+    fun onSaveInClick(popUpScreen: () -> Unit){
 
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 SnackbarManager.showMessage(throwable.toSnackbarMessage())
             },
             block = {
-
+                val editedUserInfo = userInfo.value
+                if (editedUserInfo.id == null) {
+                    storageService.save(editedUserInfo)
+                } else {
+                    storageService.update(editedUserInfo)
+                }
+                popUpScreen()
             }
         )
 
