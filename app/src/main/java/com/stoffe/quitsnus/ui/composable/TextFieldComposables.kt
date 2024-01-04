@@ -80,6 +80,7 @@ fun NumberEditField(
     onNewValue:  (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String,
+    placeHolder: String,
 ){
     OutlinedTextField(
         singleLine = true,
@@ -87,7 +88,7 @@ fun NumberEditField(
         value = value,
         label = { Text(text = label)},
         onValueChange = {onNewValue(it)},
-        placeholder = { Text("Email")},
+        placeholder = { Text(placeHolder)},
         leadingIcon = {Icon(painter = painterResource(id = R.drawable.prilla),contentDescription = "Email",modifier = Modifier.size(24.dp)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     )

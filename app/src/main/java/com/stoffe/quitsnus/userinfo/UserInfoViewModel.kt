@@ -26,7 +26,7 @@ class UserInfoViewModel @Inject constructor(
         private set
 
     private val doserPerDag
-        get() = uiState.value.userInfo.doserPerDag
+        get() = uiState.value.userInfo.dosorPerDag
 
     private val prillorPerDosa
         get() = uiState.value.userInfo.prillorPerDosa
@@ -35,7 +35,7 @@ class UserInfoViewModel @Inject constructor(
         get() = uiState.value.userInfo.prisPerDosa
 
     fun onDoserPerDagChange(newValue: String) {
-        userInfo.value = userInfo.value.copy(doserPerDag = newValue)
+        userInfo.value = userInfo.value.copy(dosorPerDag = newValue)
     }
 
     fun onPrillorPerDosaChange(newValue: String) {

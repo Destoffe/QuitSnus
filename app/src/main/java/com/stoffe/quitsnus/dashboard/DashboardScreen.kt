@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stoffe.quitsnus.R
-import com.stoffe.quitsnus.SETTINGS_SCREEN
-import com.stoffe.quitsnus.USER_INFO_SCREEN
 import com.stoffe.quitsnus.common.Calculations
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.ActionToolBar
@@ -66,7 +64,7 @@ fun DashboardScreenContent(
     Scaffold {
 
         val pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
-            packagesPerDay = userInfo.doserPerDag.toDouble(),
+            packagesPerDay = userInfo.dosorPerDag.toDouble(),
             packageCost = userInfo.prisPerDosa.toDouble())
         Column(
             modifier = Modifier.padding(it),
@@ -89,10 +87,10 @@ fun DashboardScreenContent(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(16.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(text = "Doser per dag " + userInfo.doserPerDag)
+                    Text(text = "Dosor per dag " + userInfo.dosorPerDag)
                     Text(text = "Prillor per dosa " + userInfo.prillorPerDosa)
                     Text(text = "Pris per dosa " + userInfo.prisPerDosa)
                 }
@@ -104,27 +102,35 @@ fun DashboardScreenContent(
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp),
             ) {
-                Text(
-                    text = "Du sparar: $pricePerDaySaved:- Per dag",
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "Du sparar: "+ (pricePerDaySaved * 7) +":- Per vecka",
-                    textAlign = TextAlign.Center
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Du sparar: $pricePerDaySaved:- Per dag",
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Du sparar: "+ (pricePerDaySaved * 7) +":- Per vecka",
+                        textAlign = TextAlign.Center
+                    )
 
-                Text(
-                    text = "Du sparar: "+ (pricePerDaySaved * 31) +":- Per månad",
-                    textAlign = TextAlign.Center
-                )
+                    Text(
+                        text = "Du sparar: "+ (pricePerDaySaved * 31) +":- Per månad",
+                        textAlign = TextAlign.Center
+                    )
 
-                Text(
-                    text = "Du sparar: "+ (pricePerDaySaved * 365) +":- Per år",
-                    textAlign = TextAlign.Center
-                )
+                    Text(
+                        text = "Du sparar: "+ (pricePerDaySaved * 365) +":- Per år",
+                        textAlign = TextAlign.Center
+                    )
+                }
+
             }
 
-            BasicButton(text = "Lets Quit!") {
+            BasicButton(text = "Har du snusat igen?") {
                 openAndPop()
             }
         }

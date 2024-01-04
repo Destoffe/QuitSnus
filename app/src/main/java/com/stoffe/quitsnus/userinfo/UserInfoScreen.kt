@@ -28,7 +28,7 @@ fun UserInfoScreen(
 
     UserInfoScreenContent(
         uiState = uiState,
-        onDoserPerDagChange = { doser -> viewModel.onDoserPerDagChange(doser) },
+        onDosorPerDagChange = { doser -> viewModel.onDoserPerDagChange(doser) },
         onPrillorPerDosaChange = { prillor -> viewModel.onPrillorPerDosaChange(prillor) },
         onPrisPerDosaPerDosaChange = { prisPer -> viewModel.onPrisPerDosaPerDosaChange(prisPer) },
         onSaveClick =  {viewModel.onSaveInClick(popUpScreen)}
@@ -39,12 +39,12 @@ fun UserInfoScreen(
 fun UserInfoScreenContent(
     modifier: Modifier = Modifier,
     uiState: UserInfo,
-    onDoserPerDagChange: (String) -> Unit,
+    onDosorPerDagChange: (String) -> Unit,
     onPrillorPerDosaChange: (String) -> Unit,
     onPrisPerDosaPerDosaChange: (String) -> Unit,
     onSaveClick: () -> Unit,
 ){
-    BasicToolBar(title = "Setup information")
+    BasicToolBar(title = "Vi behöver lite information från dig")
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -54,15 +54,17 @@ fun UserInfoScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         NumberEditField(
-            value = uiState.doserPerDag.toString(),
-            onNewValue = onDoserPerDagChange,
+            value = uiState.dosorPerDag.toString(),
+            onNewValue = onDosorPerDagChange,
             label = "Doser per dag",
+            placeHolder = "Dosor per dag",
             modifier = Modifier.fieldModifier()
         )
         NumberEditField(
             value = uiState.prillorPerDosa.toString(),
             onNewValue = onPrillorPerDosaChange,
             label = "Prillor per dosa",
+            placeHolder = "Prillor per dosa",
             modifier = Modifier.fieldModifier()
         )
 
@@ -70,10 +72,11 @@ fun UserInfoScreenContent(
             value = uiState.prisPerDosa.toString(),
             onNewValue = onPrisPerDosaPerDosaChange,
             label = "Pris per dosa",
+            placeHolder = "Pris per dosa",
             modifier = Modifier.fieldModifier()
         )
 
-        BasicButton(text = "Save info") {
+        BasicButton(text = "Spara information") {
             onSaveClick()
         }
     }

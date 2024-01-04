@@ -7,7 +7,7 @@ import java.util.Date
 data class UserInfo(
     @DocumentId val id: String? = null,
     @ServerTimestamp val createdAt: Date = Date(),
-    val doserPerDag: String = "",
+    val dosorPerDag: String = "",
     val prillorPerDosa: String = "",
     val prisPerDosa: String = "",
     val userId: String = ""
