@@ -16,6 +16,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.stoffe.quitsnus.dashboard.DashboardScreen
+import com.stoffe.quitsnus.fail.FailScreen
 import com.stoffe.quitsnus.login.LoginScreen
 import com.stoffe.quitsnus.settings.SettingsScreen
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
@@ -44,7 +45,7 @@ fun SnusApp() {
                         }
                     )
                 },
-                ) {
+            ) {
                 NavHost(
                     navController = appState.navController,
                     startDestination = LOGIN_SCREEN,
@@ -64,9 +65,19 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
 
     composable(DASHBOARD_SCREEN) {
         DashboardScreen(
-            openAndPopUp = { appState.navigateAndPopUp(USER_INFO_SCREEN,
-            DASHBOARD_SCREEN) },
-            openScreen =  {appState.navigate(SETTINGS_SCREEN)}
+            openAndPopUpInit = {
+                appState.navigateAndPopUp(
+                    USER_INFO_SCREEN,
+                    DASHBOARD_SCREEN
+                )
+            },
+            openScreen = { appState.navigate(SETTINGS_SCREEN) },
+            openAndPopUpFail = {
+                appState.navigateAndPopUp(
+                    FAIL_SCREEN,
+                    DASHBOARD_SCREEN
+                )
+            }
         )
     }
 
@@ -75,6 +86,15 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
     }
 
     composable(USER_INFO_SCREEN) {
-        UserInfoScreen(popUpScreen = { appState.navigateAndPopUp(DASHBOARD_SCREEN, USER_INFO_SCREEN) })
+        UserInfoScreen(popUpScreen = {
+            appState.navigateAndPopUp(
+                DASHBOARD_SCREEN,
+                USER_INFO_SCREEN
+            )
+        })
+    }
+
+    composable(FAIL_SCREEN) {
+        FailScreen(openAndPopUp = { appState.navigateAndPopUp(DASHBOARD_SCREEN, FAIL_SCREEN) })
     }
 }

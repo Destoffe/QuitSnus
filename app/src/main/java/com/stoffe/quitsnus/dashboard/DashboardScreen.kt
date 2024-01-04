@@ -28,7 +28,8 @@ import com.stoffe.quitsnus.ui.composable.BasicButton
 
 @Composable
 fun DashboardScreen(
-    openAndPopUp: () -> Unit,
+    openAndPopUpInit: () -> Unit,
+    openAndPopUpFail: () -> Unit,
     openScreen: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel<DashboardViewModel>()
 ) {
@@ -44,11 +45,12 @@ fun DashboardScreen(
     } else if (!loading.value && userInfos != null) {
         DashboardScreenContent(
             userInfo = userInfos!!,
-            openAndPop = openAndPopUp,
-            openScreen = openScreen
+            openAndPopInit = openAndPopUpInit,
+            openScreen = openScreen,
+            openAndPopFail = openAndPopUpFail
         )
     } else if(!loading.value && shouldNavigateToInput.value) {
-        openAndPopUp()
+        openAndPopUpInit()
     }else {
         DashboardLoadingScreen()
     }
@@ -59,15 +61,15 @@ fun DashboardScreen(
 fun DashboardScreenContent(
     userInfo: UserInfo,
     openScreen: () -> Unit,
-    openAndPop: () -> Unit,
+    openAndPopInit: () -> Unit,
+    openAndPopFail: () -> Unit,
 ) {
-    Scaffold {
-
         val pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
             packagesPerDay = userInfo.dosorPerDag.toDouble(),
             packageCost = userInfo.prisPerDosa.toDouble())
+
+        val daysSinceUsed = Calculations.calculateDateDifference(userInfo.createdAt.toString())
         Column(
-            modifier = Modifier.padding(it),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -77,6 +79,24 @@ fun DashboardScreenContent(
                 endActionIcon = R.drawable.ic_settings_24,
                 endAction = { openScreen() }
             )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+
+                ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Du har inte snusat på $daysSinceUsed dagar, Grattis!")
+
+                }
+
+            }
 
             Card(
                 modifier = Modifier
@@ -131,11 +151,9 @@ fun DashboardScreenContent(
             }
 
             BasicButton(text = "Har du snusat igen?") {
-                openAndPop()
+                openAndPopFail()
             }
         }
-
-    }
 }
 
 @Composable
