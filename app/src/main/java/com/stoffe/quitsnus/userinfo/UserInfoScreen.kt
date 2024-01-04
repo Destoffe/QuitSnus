@@ -24,9 +24,7 @@ fun UserInfoScreen(
     viewModel: UserInfoViewModel = hiltViewModel<UserInfoViewModel>(),
     popUpScreen: () -> Unit,
 ){
-
     val uiState by viewModel.userInfo
-
 
     UserInfoScreenContent(
         uiState = uiState,

@@ -1,7 +1,6 @@
 package com.stoffe.quitsnus.dashboard
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoffe.quitsnus.common.idFromParameter
@@ -10,11 +9,9 @@ import com.stoffe.quitsnus.misc.AccountService
 import com.stoffe.quitsnus.misc.StorageService
 import com.stoffe.quitsnus.ui.composable.SnackbarManager
 import com.stoffe.quitsnus.ui.composable.SnackbarMessage.Companion.toSnackbarMessage
-import com.stoffe.quitsnus.userinfo.UserInfoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,22 +21,26 @@ class DashboardViewModel @Inject constructor(
     private val storageService: StorageService
 
 ) : ViewModel() {
-    val userInfo = storageService.userInfo
+    val userInfo = MutableStateFlow<UserInfo?>(null)
+    val loading = MutableStateFlow(true)
 
     init {
-        onSaveInClick()
+        loading.value = true
+        getUserData()
     }
 
-    fun onSaveInClick(){
-
+    fun getUserData(){
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 SnackbarManager.showMessage(throwable.toSnackbarMessage())
+                loading.value = false
             },
             block = {
-                Log.d("destoffe","id: " + accountService.currentUserId.idFromParameter())
-                Log.d("destoffe","id: " + accountService.currentUserId)
-
+                loading.value = true
+                storageService.userInfo.collect { userInfoValue ->
+                    userInfo.value = userInfoValue[0]
+                    loading.value = false
+                }
             }
         )
 
