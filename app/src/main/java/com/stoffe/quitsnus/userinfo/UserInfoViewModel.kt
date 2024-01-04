@@ -1,5 +1,6 @@
 package com.stoffe.quitsnus.userinfo
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -54,11 +55,15 @@ class UserInfoViewModel @Inject constructor(
             block = {
                 val editedUserInfo = userInfo.value
                 if (editedUserInfo.id == null) {
-                    storageService.save(editedUserInfo)
+                    val test = storageService.save(editedUserInfo)
+                    if(test.isNotBlank()){
+                        popUpScreen()
+                    }
+                    Log.d("destoffe",": " + test)
                 } else {
                     storageService.update(editedUserInfo)
                 }
-                popUpScreen()
+
             }
         )
 

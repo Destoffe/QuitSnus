@@ -23,6 +23,7 @@ class DashboardViewModel @Inject constructor(
 ) : ViewModel() {
     val userInfo = MutableStateFlow<UserInfo?>(null)
     val loading = MutableStateFlow(true)
+    val shouldNavigateToDataInput = MutableStateFlow(false)
 
     init {
         loading.value = true
@@ -34,11 +35,17 @@ class DashboardViewModel @Inject constructor(
             CoroutineExceptionHandler { _, throwable ->
                 SnackbarManager.showMessage(throwable.toSnackbarMessage())
                 loading.value = false
+                shouldNavigateToDataInput.value = true
             },
             block = {
-                loading.value = true
                 storageService.userInfo.collect { userInfoValue ->
                     userInfo.value = userInfoValue[0]
+                    if(userInfoValue[0] == null){
+                        shouldNavigateToDataInput.value = true
+                    }else {
+                        shouldNavigateToDataInput.value = false
+                    }
+
                     loading.value = false
                 }
             }

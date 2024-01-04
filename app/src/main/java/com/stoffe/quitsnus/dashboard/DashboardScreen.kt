@@ -15,12 +15,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stoffe.quitsnus.R
 import com.stoffe.quitsnus.SETTINGS_SCREEN
 import com.stoffe.quitsnus.USER_INFO_SCREEN
+import com.stoffe.quitsnus.common.Calculations
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.ActionToolBar
 import com.stoffe.quitsnus.ui.composable.BasicButton
@@ -28,25 +30,29 @@ import com.stoffe.quitsnus.ui.composable.BasicButton
 
 @Composable
 fun DashboardScreen(
-    openScreen: (String) -> Unit,
+    openAndPopUp: () -> Unit,
+    openScreen: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel<DashboardViewModel>()
 ) {
-    viewModel.getUserData()
     val userInfos by viewModel
         .userInfo
         .collectAsStateWithLifecycle(null)
 
     val loading = viewModel.loading.collectAsState()
+    val shouldNavigateToInput = viewModel.shouldNavigateToDataInput.collectAsState()
 
-    if(loading.value){
+    if (loading.value) {
         DashboardLoadingScreen()
-    }else if(!loading.value && userInfos != null){
+    } else if (!loading.value && userInfos != null) {
         DashboardScreenContent(
             userInfo = userInfos!!,
+            openAndPop = openAndPopUp,
             openScreen = openScreen
         )
+    } else if(!loading.value && shouldNavigateToInput.value) {
+        openAndPopUp()
     }else {
-        openScreen(USER_INFO_SCREEN)
+        DashboardLoadingScreen()
     }
 }
 
@@ -54,19 +60,24 @@ fun DashboardScreen(
 @Composable
 fun DashboardScreenContent(
     userInfo: UserInfo,
-    openScreen: (String) -> Unit
+    openScreen: () -> Unit,
+    openAndPop: () -> Unit,
 ) {
     Scaffold {
+
+        val pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
+            packagesPerDay = userInfo.doserPerDag.toDouble(),
+            packageCost = userInfo.prisPerDosa.toDouble())
         Column(
             modifier = Modifier.padding(it),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ActionToolBar(
                 modifier = Modifier.wrapContentSize(Alignment.TopEnd),
                 title = "Quit Snus",
                 endActionIcon = R.drawable.ic_settings_24,
-                endAction = { openScreen(SETTINGS_SCREEN) }
+                endAction = { openScreen() }
             )
 
             Card(
@@ -77,7 +88,9 @@ fun DashboardScreenContent(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
                 ) {
                     Text(text = "Doser per dag " + userInfo.doserPerDag)
                     Text(text = "Prillor per dosa " + userInfo.prillorPerDosa)
@@ -86,9 +99,33 @@ fun DashboardScreenContent(
 
             }
 
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+            ) {
+                Text(
+                    text = "Du sparar: $pricePerDaySaved:- Per dag",
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "Du sparar: "+ (pricePerDaySaved * 7) +":- Per vecka",
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "Du sparar: "+ (pricePerDaySaved * 31) +":- Per månad",
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "Du sparar: "+ (pricePerDaySaved * 365) +":- Per år",
+                    textAlign = TextAlign.Center
+                )
+            }
 
             BasicButton(text = "Lets Quit!") {
-                openScreen(USER_INFO_SCREEN)
+                openAndPop()
             }
         }
 
@@ -96,7 +133,7 @@ fun DashboardScreenContent(
 }
 
 @Composable
-fun DashboardLoadingScreen(){
+fun DashboardLoadingScreen() {
     Scaffold {
         Column(
             modifier = Modifier

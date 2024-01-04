@@ -1,6 +1,5 @@
 package com.stoffe.quitsnus
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -64,7 +63,11 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
     }
 
     composable(DASHBOARD_SCREEN) {
-        DashboardScreen(openScreen = { route -> appState.navigate(route) })
+        DashboardScreen(
+            openAndPopUp = { appState.navigateAndPopUp(USER_INFO_SCREEN,
+            DASHBOARD_SCREEN) },
+            openScreen =  {appState.navigate(SETTINGS_SCREEN)}
+        )
     }
 
     composable(SETTINGS_SCREEN) {
@@ -72,6 +75,6 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
     }
 
     composable(USER_INFO_SCREEN) {
-        UserInfoScreen(popUpScreen = { appState.popUp() })
+        UserInfoScreen(popUpScreen = { appState.navigateAndPopUp(DASHBOARD_SCREEN, USER_INFO_SCREEN) })
     }
 }
