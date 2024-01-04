@@ -28,14 +28,14 @@ class UserInfoViewModel @Inject constructor(
     init {
         val taskId = savedStateHandle.get<String>(USERINFO_ID)
         if (taskId != null) {
-            Log.d("destoffe"," trying to get: "  + taskId)
+            Log.d("destoffe"," trying to get: "  + taskId.idFromParameter())
             viewModelScope.launch(
                 CoroutineExceptionHandler { _, throwable ->
                     SnackbarManager.showMessage(throwable.toSnackbarMessage())
                 },
                 block = {
                     userInfo.value =
-                        storageService.getUserInfo(taskId) ?: UserInfo()
+                        storageService.getUserInfo(taskId.idFromParameter()) ?: UserInfo()
                 }
             )
         }
