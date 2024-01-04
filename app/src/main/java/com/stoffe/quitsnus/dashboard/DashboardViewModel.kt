@@ -3,7 +3,8 @@ package com.stoffe.quitsnus.dashboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stoffe.quitsnus.common.idFromParameter
+import com.stoffe.quitsnus.USERINFO_ID_ARG
+import com.stoffe.quitsnus.USER_INFO_SCREEN
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.misc.AccountService
 import com.stoffe.quitsnus.misc.StorageService
@@ -28,6 +29,11 @@ class DashboardViewModel @Inject constructor(
     init {
         loading.value = true
         getUserData()
+    }
+
+    fun onUserInfoActionClick(openScreen: (String) -> Unit, userInfo: UserInfo) {
+        openScreen("$USER_INFO_SCREEN${userInfo.id}")
+        Log.d("destoffe","My id: "+ accountService.currentUserId )
     }
 
     fun getUserData(){

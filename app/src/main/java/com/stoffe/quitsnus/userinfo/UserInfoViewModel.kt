@@ -2,8 +2,11 @@ package com.stoffe.quitsnus.userinfo
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stoffe.quitsnus.USERINFO_ID
+import com.stoffe.quitsnus.common.idFromParameter
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.misc.AccountService
 import com.stoffe.quitsnus.misc.StorageService
@@ -17,11 +20,28 @@ import javax.inject.Inject
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
     private val accountService: AccountService,
-    private val storageService: StorageService
+    private val storageService: StorageService,
+    savedStateHandle: SavedStateHandle,
 
-) : ViewModel() {
-
+    ) : ViewModel() {
     val userInfo = mutableStateOf(UserInfo())
+    init {
+        val taskId = savedStateHandle.get<String>(USERINFO_ID)
+        if (taskId != null) {
+            Log.d("destoffe"," trying to get: "  + taskId)
+            viewModelScope.launch(
+                CoroutineExceptionHandler { _, throwable ->
+                    SnackbarManager.showMessage(throwable.toSnackbarMessage())
+                },
+                block = {
+                    userInfo.value =
+                        storageService.getUserInfo(taskId) ?: UserInfo()
+                }
+            )
+        }
+    }
+
+
     var uiState = mutableStateOf(UserInfoUiState())
         private set
 
@@ -46,7 +66,7 @@ class UserInfoViewModel @Inject constructor(
         userInfo.value = userInfo.value.copy(prisPerDosa = newValue)
     }
 
-    fun onSaveInClick(popUpScreen: () -> Unit){
+    fun onSaveInClick(popUpScreen: () -> Unit) {
 
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
@@ -55,14 +75,11 @@ class UserInfoViewModel @Inject constructor(
             block = {
                 val editedUserInfo = userInfo.value
                 if (editedUserInfo.id == null) {
-                    val test = storageService.save(editedUserInfo)
-                    if(test.isNotBlank()){
-                        popUpScreen()
-                    }
-                    Log.d("destoffe",": " + test)
+                    storageService.save(editedUserInfo)
                 } else {
                     storageService.update(editedUserInfo)
                 }
+                popUpScreen()
 
             }
         )

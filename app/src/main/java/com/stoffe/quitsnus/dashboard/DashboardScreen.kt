@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.stoffe.quitsnus.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stoffe.quitsnus.R
+import com.stoffe.quitsnus.USER_INFO_SCREEN
 import com.stoffe.quitsnus.common.Calculations
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.ActionToolBar
@@ -28,7 +32,7 @@ import com.stoffe.quitsnus.ui.composable.BasicButton
 
 @Composable
 fun DashboardScreen(
-    openAndPopUpInit: () -> Unit,
+    openAndPopUpInit: (String) -> Unit,
     openAndPopUpFail: () -> Unit,
     openScreen: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel<DashboardViewModel>()
@@ -45,12 +49,13 @@ fun DashboardScreen(
     } else if (!loading.value && userInfos != null) {
         DashboardScreenContent(
             userInfo = userInfos!!,
-            openAndPopInit = openAndPopUpInit,
+            openAndPopInit = viewModel::onUserInfoActionClick,
+            openAndPopInitNav = openAndPopUpInit,
             openScreen = openScreen,
             openAndPopFail = openAndPopUpFail
         )
     } else if(!loading.value && shouldNavigateToInput.value) {
-        openAndPopUpInit()
+        openAndPopUpInit(USER_INFO_SCREEN)
     }else {
         DashboardLoadingScreen()
     }
@@ -61,12 +66,17 @@ fun DashboardScreen(
 fun DashboardScreenContent(
     userInfo: UserInfo,
     openScreen: () -> Unit,
-    openAndPopInit: () -> Unit,
+    openAndPopInit:  ((String) -> Unit, UserInfo) -> Unit,
+    openAndPopInitNav: (String) -> Unit,
     openAndPopFail: () -> Unit,
 ) {
-        val pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
+    var pricePerDaySaved = 0.0
+    if(userInfo.dosorPerDag.isNotEmpty() && userInfo.prisPerDosa.isNotEmpty()) {
+         pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
             packagesPerDay = userInfo.dosorPerDag.toDouble(),
-            packageCost = userInfo.prisPerDosa.toDouble())
+            packageCost = userInfo.prisPerDosa.toDouble()
+        )
+    }
 
         val daysSinceUsed = Calculations.calculateDateDifference(userInfo.createdAt.toString())
         Column(
@@ -102,6 +112,9 @@ fun DashboardScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp),
+                onClick = {
+                    openAndPopInit(openAndPopInitNav,userInfo)
+                }
 
             ) {
                 Column(
