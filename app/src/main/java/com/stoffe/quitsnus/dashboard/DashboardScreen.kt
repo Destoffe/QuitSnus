@@ -79,7 +79,10 @@ fun DashboardScreenContent(
     }
 
         val daysSinceUsed = Calculations.calculateDateDifference(userInfo.createdAt.toString())
-        Column(
+
+        val snusNotSnused = Calculations.calculateSnusedNotUsed(userInfo.prillorPerDosa.toInt(),userInfo.dosorPerDag.toDouble(),daysSinceUsed.toInt())
+
+    Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -103,19 +106,41 @@ fun DashboardScreenContent(
                         .fillMaxWidth()
                 ) {
                     Text(text = "Du har inte snusat på $daysSinceUsed dagar, Grattis!")
+                    Text(text = "Du hade egentligen snusat $snusNotSnused prillor")
 
                 }
 
             }
+        /*
+                   Card(
+                       modifier = Modifier
+                           .fillMaxWidth()
+                           .padding(horizontal = 32.dp),
+                       onClick = {
+                           openAndPopInit(openAndPopInitNav,userInfo)
+                       }
 
+                   ) {
+
+                       Column(
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier
+                               .padding(16.dp)
+                               .fillMaxWidth()
+                       ) {
+                           Text(text = "Dosor per dag " + userInfo.dosorPerDag)
+                           Text(text = "Prillor per dosa " + userInfo.prillorPerDosa)
+                           Text(text = "Pris per dosa " + userInfo.prisPerDosa)
+                       }
+
+
+            }
+
+                        */
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp),
-                onClick = {
-                    openAndPopInit(openAndPopInitNav,userInfo)
-                }
-
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,40 +148,26 @@ fun DashboardScreenContent(
                         .padding(16.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(text = "Dosor per dag " + userInfo.dosorPerDag)
-                    Text(text = "Prillor per dosa " + userInfo.prillorPerDosa)
-                    Text(text = "Pris per dosa " + userInfo.prisPerDosa)
-                }
-
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                ) {
                     Text(
-                        text = "Du sparar: $pricePerDaySaved:- Per dag",
+                        text = "Såhär mycket sparar du",
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "Du sparar: "+ (pricePerDaySaved * 7) +":- Per vecka",
+                        text = "$pricePerDaySaved:- Per dag",
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text =  (pricePerDaySaved * 7).toString() + ":- Per vecka",
                         textAlign = TextAlign.Center
                     )
 
                     Text(
-                        text = "Du sparar: "+ (pricePerDaySaved * 31) +":- Per månad",
+                        text = (pricePerDaySaved * 31).toString() +":- Per månad",
                         textAlign = TextAlign.Center
                     )
 
                     Text(
-                        text = "Du sparar: "+ (pricePerDaySaved * 365) +":- Per år",
+                        text = (pricePerDaySaved * 365).toString() +":- Per år",
                         textAlign = TextAlign.Center
                     )
                 }

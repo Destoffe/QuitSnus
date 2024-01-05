@@ -3,6 +3,7 @@ package com.stoffe.quitsnus.common
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import kotlin.math.roundToInt
 
 object Calculations {
     fun calculateMoneySavedPerDay(packagesPerDay: Double, packageCost: Double): Double {
@@ -17,5 +18,9 @@ object Calculations {
         val currentDate = LocalDateTime.now().plusDays(5)
 
         return ChronoUnit.DAYS.between(specifiedDate, currentDate)
+    }
+
+    fun calculateSnusedNotUsed(prillorPerDosa: Int, doserPerDag: Double,dayDifference: Int) : Int {
+        return (prillorPerDosa * doserPerDag * dayDifference).roundToInt()
     }
 }
