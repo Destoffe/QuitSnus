@@ -72,6 +72,9 @@ fun FailScreen(
             Button(onClick = { showTimePicker = true }) {
                 Text(text = time)
             }
+            Button(onClick = { showTimePicker = true }) {
+                Text(text = "Save")
+            }
             if (showTimePicker) {
                 SnusTimePicker(
                     onDismiss = { timeString ->

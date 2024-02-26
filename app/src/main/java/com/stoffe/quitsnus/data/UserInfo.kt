@@ -10,5 +10,6 @@ data class UserInfo(
     val dosorPerDag: String = "",
     val prillorPerDosa: String = "",
     val prisPerDosa: String = "",
-    val userId: String = ""
+    val userId: String = "",
+    val fails: List<Date> = mutableListOf()
 )
