@@ -1,6 +1,5 @@
 package com.stoffe.quitsnus.ui.composable
 
-import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.stoffe.quitsnus.common.Utils
 
 @OptIn(ExperimentalMaterial3Api::class)
