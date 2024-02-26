@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,10 +26,12 @@ import com.stoffe.quitsnus.userinfo.UserInfoScreen
 
 
 @Composable
-fun SnusApp() {
+fun SnusApp(
+    viewModel: MainViewModel = hiltViewModel<MainViewModel>()
+) {
     val snackbarHostState = remember { SnackbarHostState() }
-
     val appState = rememberAppState(snackbarHostState = snackbarHostState)
+    val hasUser = viewModel.hasUser
 
     QuitSnusTheme {
 
@@ -47,9 +50,10 @@ fun SnusApp() {
                     )
                 },
             ) {
+                val startDestination = if(hasUser) DASHBOARD_SCREEN else LOGIN_SCREEN
                 NavHost(
                     navController = appState.navController,
-                    startDestination = LOGIN_SCREEN,
+                    startDestination = startDestination,
                     modifier = Modifier.padding(it)
                 ) {
                     quitSnusGraph(appState)
