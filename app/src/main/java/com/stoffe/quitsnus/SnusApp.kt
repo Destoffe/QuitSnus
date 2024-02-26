@@ -74,10 +74,7 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
             },
             openScreen = { appState.navigate(SETTINGS_SCREEN) },
             openAndPopUpFail = {
-                appState.navigateAndPopUp(
-                    FAIL_SCREEN,
-                    DASHBOARD_SCREEN
-                )
+                appState.navigate(FAIL_SCREEN)
             }
         )
     }
@@ -102,6 +99,6 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
     }
 
     composable(FAIL_SCREEN) {
-        FailScreen(openAndPopUp = { appState.navigateAndPopUp(DASHBOARD_SCREEN, FAIL_SCREEN) })
+        FailScreen(popup = { appState.popUp() })
     }
 }
