@@ -22,12 +22,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.stoffe.quitsnus.common.Utils
 import com.stoffe.quitsnus.ui.composable.MyDatePickerDialog
 import com.stoffe.quitsnus.ui.composable.SnusTimePicker
 
 @Composable
 fun FailScreen(
     popup: () -> Unit,
+    viewModel: FailViewModel = hiltViewModel<FailViewModel>()
 ) {
     var date by remember {
         mutableStateOf("Open date picker dialog")
@@ -72,7 +75,9 @@ fun FailScreen(
             Button(onClick = { showTimePicker = true }) {
                 Text(text = time)
             }
-            Button(onClick = { showTimePicker = true }) {
+            Button(onClick = {
+                viewModel.onSaveInClick (popup, Utils.combineDateAndTime(date,time))
+            }) {
                 Text(text = "Save")
             }
             if (showTimePicker) {

@@ -47,16 +47,10 @@ class DashboardViewModel @Inject constructor(
             block = {
                 storageService.userInfo.collect { userInfoValue ->
                     userInfo.value = userInfoValue[0]
-                    if(userInfoValue[0] == null){
-                        shouldNavigateToDataInput.value = true
-                    }else {
-                        shouldNavigateToDataInput.value = false
-                    }
-
+                    shouldNavigateToDataInput.value = false
                     loading.value = false
                 }
             }
         )
-
     }
 }

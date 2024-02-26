@@ -11,5 +11,5 @@ data class UserInfo(
     val prillorPerDosa: String = "",
     val prisPerDosa: String = "",
     val userId: String = "",
-    val fails: List<Date> = mutableListOf()
+    val fails: MutableList<Date> = mutableListOf()
 )

@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
-    private val accountService: AccountService,
     private val storageService: StorageService,
     savedStateHandle: SavedStateHandle,
 
@@ -40,19 +39,6 @@ class UserInfoViewModel @Inject constructor(
             )
         }
     }
-
-
-    var uiState = mutableStateOf(UserInfoUiState())
-        private set
-
-    private val doserPerDag
-        get() = uiState.value.userInfo.dosorPerDag
-
-    private val prillorPerDosa
-        get() = uiState.value.userInfo.prillorPerDosa
-
-    private val prisPerDosa
-        get() = uiState.value.userInfo.prisPerDosa
 
     fun onDoserPerDagChange(newValue: String) {
         userInfo.value = userInfo.value.copy(dosorPerDag = newValue)
@@ -83,6 +69,5 @@ class UserInfoViewModel @Inject constructor(
 
             }
         )
-
     }
 }
