@@ -90,7 +90,7 @@ fun DashboardScreenContent(
         daysSinceUsed.toInt()
     )
 
-    val moneySaved = (snusNotSnused.toFloat() / userInfo.prisPerDosa.toFloat()).toInt() * daysSinceUsed
+    val moneySaved = (daysSinceUsed * pricePerDaySaved).toInt()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
