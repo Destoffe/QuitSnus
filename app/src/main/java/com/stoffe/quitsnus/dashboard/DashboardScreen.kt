@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stoffe.quitsnus.R
 import com.stoffe.quitsnus.USER_INFO_SCREEN
 import com.stoffe.quitsnus.common.Calculations
+import com.stoffe.quitsnus.common.Calculations.getLastDateSnused
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.ActionToolBar
 import com.stoffe.quitsnus.ui.composable.BasicButton
@@ -79,7 +80,7 @@ fun DashboardScreenContent(
         )
     }
 
-    val daysSinceUsed = Calculations.calculateDateDifference(userInfo.createdAt.toString())
+    val daysSinceUsed = Calculations.calculateDateDifference(getLastDateSnused(userInfo.fails,userInfo.createdAt).toString())
 
     val snusNotSnused = Calculations.calculateSnusedNotUsed(
         userInfo.prillorPerDosa.toInt(),
