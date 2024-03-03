@@ -24,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.stoffe.quitsnus.common.fieldModifier
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.BasicButton
-import com.stoffe.quitsnus.ui.composable.BasicToolBar
 import com.stoffe.quitsnus.ui.composable.NumberEditField
 import com.stoffe.quitsnus.ui.theme.QuitSnusTheme
 
@@ -39,13 +38,12 @@ fun UserInfoScreen(
 
     UserInfoScreenContent(
         uiState = uiState,
+        isEmpty = isEmpty,
         onDosorPerDagChange = { doser -> viewModel.onDoserPerDagChange(doser) },
         onPrillorPerDosaChange = { prillor -> viewModel.onPrillorPerDosaChange(prillor) },
         onPrisPerDosaPerDosaChange = { prisPer -> viewModel.onPrisPerDosaPerDosaChange(prisPer) },
         onSaveClick = { viewModel.onSaveInClick(popUpScreen,!isBackStackEmpty) },
-        popup = popUpScreen,
-        isBackStackEmpty = isBackStackEmpty,
-        isEmpty = isEmpty
+        popup = popUpScreen
     )
 }
 
@@ -59,8 +57,7 @@ fun UserInfoScreenContent(
     onPrillorPerDosaChange: (String) -> Unit,
     onPrisPerDosaPerDosaChange: (String) -> Unit,
     onSaveClick: () -> Unit,
-    popup: () -> Unit,
-    isBackStackEmpty: Boolean
+    popup: () -> Unit
 ) {
 
     Scaffold(
@@ -121,7 +118,6 @@ fun UserInfoScreenContent(
             )
         }
     }
-
 }
 
 @Preview

@@ -1,5 +1,6 @@
 package com.stoffe.quitsnus.common
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -24,5 +25,16 @@ object Utils {
         // Combine date and time
 
         return Date(date.time + time.time)
+    }
+
+    fun isValidDate(inputDate: String): Boolean {
+        return try {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            dateFormat.isLenient = false
+            dateFormat.parse(inputDate)
+            true // Parsing succeeded, so it's a valid date
+        } catch (e: ParseException) {
+            false // Parsing failed, indicating that the input is not a valid date
+        }
     }
 }

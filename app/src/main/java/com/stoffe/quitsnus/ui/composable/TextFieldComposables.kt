@@ -1,6 +1,10 @@
 package com.stoffe.quitsnus.ui.composable
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -16,7 +20,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -92,6 +98,38 @@ fun NumberEditField(
         leadingIcon = {Icon(painter = painterResource(id = R.drawable.prilla),contentDescription = "Email",modifier = Modifier.size(24.dp)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     )
+}
+
+@Composable
+fun DatePickerEditField(
+    value: String,
+    onNewValue:  (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String,
+    placeHolder: String,
+    onClick: () -> Unit,
+){
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box{
+        OutlinedTextField(
+            singleLine = true,
+            modifier = modifier,
+            interactionSource = interactionSource,
+            readOnly = true,
+            value = value,
+            label = { Text(text = label)},
+            onValueChange = {onNewValue(it)},
+            leadingIcon = {Icon(painter = painterResource(id = R.drawable.ic_calendar),contentDescription = "Email",modifier = Modifier.size(24.dp)) },
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .alpha(0f)
+                .clickable { onClick() }
+        )
+    }
+
 }
 
 @Composable

@@ -23,9 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.stoffe.quitsnus.common.Utils.isValidDate
+import com.stoffe.quitsnus.ui.composable.DatePickerEditField
 import com.stoffe.quitsnus.ui.composable.MyDatePickerDialog
-import com.stoffe.quitsnus.ui.composable.SnusTimePicker
+import com.stoffe.quitsnus.ui.composable.SnusHeaderText1
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @Composable
@@ -34,18 +37,10 @@ fun FailScreen(
     viewModel: FailViewModel = hiltViewModel<FailViewModel>()
 ) {
     var date by remember {
-        mutableStateOf("Open date picker dialog")
-    }
-
-    var time by remember {
-        mutableStateOf("Open time picker dialog")
+        mutableStateOf("Klicka för att välja datum")
     }
 
     var showDatePicker by remember {
-        mutableStateOf(false)
-    }
-
-    var showTimePicker by remember {
         mutableStateOf(false)
     }
 
@@ -69,33 +64,28 @@ fun FailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            Button(onClick = { showDatePicker = true }) {
-                Text(text = date)
-            }
+            SnusHeaderText1(text = "När snusade du?")
+
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-            /*
-            Button(onClick = { showTimePicker = true }) {
-                Text(text = time)
+            DatePickerEditField(
+                value = date,
+                onNewValue = {},
+                label = "Välj datum",
+                placeHolder = Date().toString()
+            ) {
+                showDatePicker = true
             }
-
-             */
-            Button(onClick = {
-                val newDate = dateFormat.parse(date)
-                if(newDate != null) {
-                    viewModel.onSaveInClick(popup, newDate)
-                }
-            }) {
+            Button(
+                onClick = {
+                    val newDate = dateFormat.parse(date)
+                    if (newDate != null) {
+                        viewModel.onSaveInClick(popup, newDate)
+                    }
+                },
+                enabled = isValidDate(date)
+            ) {
                 Text(text = "Save")
-            }
-            if (showTimePicker) {
-                SnusTimePicker(
-                    onDismiss = { timeString ->
-                        showTimePicker = false
-                        time = timeString
-                    },
-                    onSave = { timeString -> time = timeString }
-                )
             }
             if (showDatePicker) {
                 MyDatePickerDialog(
