@@ -23,9 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.stoffe.quitsnus.common.Utils
 import com.stoffe.quitsnus.ui.composable.MyDatePickerDialog
 import com.stoffe.quitsnus.ui.composable.SnusTimePicker
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun FailScreen(
@@ -71,12 +72,19 @@ fun FailScreen(
             Button(onClick = { showDatePicker = true }) {
                 Text(text = date)
             }
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
+            /*
             Button(onClick = { showTimePicker = true }) {
                 Text(text = time)
             }
+
+             */
             Button(onClick = {
-                viewModel.onSaveInClick (popup, Utils.combineDateAndTime(date,time))
+                val newDate = dateFormat.parse(date)
+                if(newDate != null) {
+                    viewModel.onSaveInClick(popup, newDate)
+                }
             }) {
                 Text(text = "Save")
             }
@@ -89,7 +97,6 @@ fun FailScreen(
                     onSave = { timeString -> time = timeString }
                 )
             }
-
             if (showDatePicker) {
                 MyDatePickerDialog(
                     onDateSelected = { date = it },
@@ -98,5 +105,4 @@ fun FailScreen(
             }
         }
     }
-
 }

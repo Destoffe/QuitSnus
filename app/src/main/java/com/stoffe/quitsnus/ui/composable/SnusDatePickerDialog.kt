@@ -9,6 +9,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,14 +23,20 @@ fun MyDatePickerDialog(
         convertMillisToDate(it)
     } ?: ""
 
+    val date = Date()
+    val enabled = datePickerState.selectedDateMillis?.let {
+        it <= date.time
+    }
+
     DatePickerDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {
-            Button(onClick = {
-                onDateSelected(selectedDate)
-                onDismiss()
-            }
-
+            Button(
+                onClick = {
+                    onDateSelected(selectedDate)
+                    onDismiss()
+                },
+                enabled = enabled == true
             ) {
                 Text(text = "OK")
             }
@@ -49,6 +56,6 @@ fun MyDatePickerDialog(
 }
 
 private fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy")
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
 }
