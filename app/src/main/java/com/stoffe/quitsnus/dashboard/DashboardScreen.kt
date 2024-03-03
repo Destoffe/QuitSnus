@@ -38,41 +38,38 @@ import com.stoffe.quitsnus.ui.composable.BasicButton
 fun DashboardScreen(
     openAndPopUpInit: (String) -> Unit,
     openAndPopUpFail: () -> Unit,
-    openScreen: () -> Unit,
+    openSettingsScreen: () -> Unit,
+    openUserInfoScreen: (String) -> Unit,
     viewModel: DashboardViewModel = hiltViewModel<DashboardViewModel>()
 ) {
     val userInfos by viewModel
         .userInfo
-        .collectAsStateWithLifecycle(null)
+        .collectAsState(null)
 
     val loading = viewModel.loading.collectAsState()
-    val shouldNavigateToInput = viewModel.shouldNavigateToDataInput.collectAsState()
 
-    if (loading.value) {
-        DashboardLoadingScreen()
-    } else if (!loading.value && userInfos != null) {
-        DashboardScreenContent(
-            userInfo = userInfos!!,
-            openAndPopInit = viewModel::onUserInfoActionClick,
-            openAndPopInitNav = openAndPopUpInit,
-            openScreen = openScreen,
-            openAndPopFail = openAndPopUpFail
-        )
-    } else if (!loading.value && shouldNavigateToInput.value) {
-        openAndPopUpInit(USER_INFO_SCREEN)
-    } else {
-        DashboardLoadingScreen()
+    when (loading.value) {
+        true -> DashboardLoadingScreen()
+        (false) ->
+            if (userInfos != null) {
+                DashboardScreenContent(
+                    userInfo = userInfos!!,
+                    openScreen = openSettingsScreen,
+                    openAndPopFail = openAndPopUpFail,
+                    openUserInfoScreen = viewModel::onUserInfoActionClick,
+                    openAndNavigateUserInfoScreen = openUserInfoScreen,
+                )
+            }
     }
 }
-
 
 @Composable
 fun DashboardScreenContent(
     userInfo: UserInfo,
     openScreen: () -> Unit,
-    openAndPopInit: ((String) -> Unit, UserInfo) -> Unit,
-    openAndPopInitNav: (String) -> Unit,
     openAndPopFail: () -> Unit,
+    openUserInfoScreen: ((String) -> Unit, UserInfo) -> Unit,
+    openAndNavigateUserInfoScreen: (String) -> Unit,
 ) {
     var pricePerDaySaved = 0.0
     if (userInfo.dosorPerDag.isNotEmpty() && userInfo.prisPerDosa.isNotEmpty()) {
@@ -132,7 +129,7 @@ fun DashboardScreenContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             onClick = {
-                openAndPopInit(openAndPopInitNav, userInfo)
+                openUserInfoScreen(openAndNavigateUserInfoScreen, userInfo)
             }
 
         ) {
@@ -186,9 +183,12 @@ fun DashboardScreenContent(
 
         }
 
-        BasicButton(text = "Har du snusat igen?") {
-            openAndPopFail()
-        }
+        BasicButton(
+            text = "Har du snusat igen?",
+            action = {
+                openAndPopFail()
+            }
+        )
     }
 }
 

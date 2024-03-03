@@ -15,7 +15,7 @@ object Calculations {
     fun calculateDateDifference(dateString: String): Long {
         val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
         val specifiedDate = LocalDateTime.parse(dateString, formatter)
-        val currentDate = LocalDateTime.now().plusDays(5)
+        val currentDate = LocalDateTime.now()
 
         return ChronoUnit.DAYS.between(specifiedDate, currentDate)
     }

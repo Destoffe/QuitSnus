@@ -14,6 +14,7 @@ import com.stoffe.quitsnus.ui.composable.SnackbarManager
 import com.stoffe.quitsnus.ui.composable.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,17 +25,22 @@ class UserInfoViewModel @Inject constructor(
 
     ) : ViewModel() {
     val userInfo = mutableStateOf(UserInfo())
+    val isInfoExist = mutableStateOf(false)
+
     init {
         val taskId = savedStateHandle.get<String>(USERINFO_ID)
         if (taskId != null) {
-            Log.d("destoffe"," trying to get: "  + taskId.idFromParameter())
+            Log.d("destoffe", " trying to get: " + taskId.idFromParameter())
             viewModelScope.launch(
                 CoroutineExceptionHandler { _, throwable ->
                     SnackbarManager.showMessage(throwable.toSnackbarMessage())
                 },
                 block = {
-                    userInfo.value =
-                        storageService.getUserInfo(taskId.idFromParameter()) ?: UserInfo()
+                    val user = storageService.getUserInfo(taskId.idFromParameter()) ?: UserInfo()
+
+                    userInfo.value = user
+                    isInfoExist.value =
+                        user.prillorPerDosa.isNotEmpty() || user.dosorPerDag.isNotEmpty() || user.prisPerDosa.isNotEmpty()
                 }
             )
         }
@@ -52,7 +58,7 @@ class UserInfoViewModel @Inject constructor(
         userInfo.value = userInfo.value.copy(prisPerDosa = newValue)
     }
 
-    fun onSaveInClick(popUpScreen: () -> Unit) {
+    fun onSaveInClick(popUpScreen: () -> Unit,shouldPop: Boolean) {
 
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
@@ -65,8 +71,9 @@ class UserInfoViewModel @Inject constructor(
                 } else {
                     storageService.update(editedUserInfo)
                 }
-                popUpScreen()
-
+                if(shouldPop){
+                    popUpScreen()
+                }
             }
         )
     }

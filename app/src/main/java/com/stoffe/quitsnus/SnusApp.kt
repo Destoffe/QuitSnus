@@ -9,6 +9,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ fun SnusApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val appState = rememberAppState(snackbarHostState = snackbarHostState)
     val hasUser = viewModel.hasUser
+    val userInfo by viewModel.hasData.collectAsState(initial = null)
 
     QuitSnusTheme {
 
@@ -50,16 +53,22 @@ fun SnusApp(
                     )
                 },
             ) {
-                val startDestination = if(hasUser) DASHBOARD_SCREEN else LOGIN_SCREEN
-                NavHost(
-                    navController = appState.navController,
-                    startDestination = startDestination,
-                    modifier = Modifier.padding(it)
-                ) {
-                    quitSnusGraph(appState)
+                    val startDestination = if(!hasUser) {
+                        LOGIN_SCREEN
+                    } else if(userInfo?.isEmpty() == true){
+                        USER_INFO_SCREEN
+                    } else {
+                        DASHBOARD_SCREEN
+                    }
+                    NavHost(
+                        navController = appState.navController,
+                        startDestination = startDestination,
+                        modifier = Modifier.padding(it)
+                    ) {
+                        quitSnusGraph(appState)
+                    }
                 }
             }
-        }
     }
 }
 
@@ -76,15 +85,21 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
                     DASHBOARD_SCREEN
                 )
             },
-            openScreen = { appState.navigate(SETTINGS_SCREEN) },
+            openSettingsScreen = { appState.navigate(SETTINGS_SCREEN) },
             openAndPopUpFail = {
                 appState.navigate(FAIL_SCREEN)
+            },
+            openUserInfoScreen = {
+                appState.navigate(it)
             }
         )
     }
 
     composable(SETTINGS_SCREEN) {
-        SettingsScreen(restartApp = { route -> appState.clearAndNavigate(route) })
+        SettingsScreen(
+            restartApp = { route -> appState.clearAndNavigate(route) },
+            popup = { appState.popUp() }
+        )
     }
 
     composable(
@@ -95,11 +110,10 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
         })
     ) {
         UserInfoScreen(popUpScreen = {
-            appState.navigateAndPopUp(
-                DASHBOARD_SCREEN,
-                USER_INFO_SCREEN
-            )
-        })
+            appState.popUp()
+        },
+            isBackStackEmpty = appState.navController.previousBackStackEntry == null
+        )
     }
 
     composable(FAIL_SCREEN) {

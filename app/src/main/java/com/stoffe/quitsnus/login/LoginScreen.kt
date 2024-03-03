@@ -25,17 +25,20 @@ fun LoginScreen(
 ) {
 
     val uiState by viewModel.uiState
-    
+    val user = viewModel.user
+
     LoginScreenContent(
         modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
-        onSignInGuestClick = {viewModel.onSignInGuestClick(openAndPopUp)}
-        )
+        onSignInClick = { viewModel.onSignInClick() },
+        onSignInGuestClick = { viewModel.onSignInGuestClick() }
+    )
 
-
+    if (user) {
+        viewModel.changeScreen(openAndPopUp)
+    }
 }
 
 @Composable
@@ -46,7 +49,7 @@ fun LoginScreenContent(
     onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
     onSignInGuestClick: () -> Unit,
-){
+) {
     BasicToolBar(title = "Login")
     Column(
         modifier = modifier
@@ -66,12 +69,19 @@ fun LoginScreenContent(
             onNewValue = onPasswordChange,
             modifier = Modifier.fieldModifier()
         )
-        BasicButton(text = "Sign in") {
-            onSignInClick()
-        }
+        BasicButton(
+            text = "Sign in",
+            action = {
+                onSignInClick()
 
-        BasicButton(text = "Use app as Guest") {
-            onSignInGuestClick()
-        }
+            }
+        )
+
+        BasicButton(
+            text = "Use app as Guest",
+            action = {
+                onSignInGuestClick()
+            }
+        )
     }
 }

@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.acos
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -22,6 +23,8 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     var uiState = mutableStateOf(LoginUiState())
         private set
+
+    val user = accountService.hasUser
 
     private val email
         get() = uiState.value.email
@@ -37,7 +40,7 @@ class LoginViewModel @Inject constructor(
         uiState.value = uiState.value.copy(password = newValue)
     }
 
-    fun onSignInClick(openAndPopUp: (String, String) -> Unit){
+    fun onSignInClick(){
         if(!email.isValidEmail()){
             SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Email invalid"))
             return
@@ -54,22 +57,22 @@ class LoginViewModel @Inject constructor(
             },
             block = {
                 accountService.authenticate(email = email,password = password)
-                openAndPopUp(DASHBOARD_SCREEN, LOGIN_SCREEN)
             }
         )
-
     }
 
-    fun onSignInGuestClick(openAndPopUp: (String, String) -> Unit){
+    fun changeScreen(openAndPopUp: (String, String) -> Unit){
+        openAndPopUp(DASHBOARD_SCREEN, LOGIN_SCREEN)
+    }
+
+    fun onSignInGuestClick(){
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 SnackbarManager.showMessage(throwable.toSnackbarMessage())
             },
             block = {
                 accountService.createAnonymousAccount()
-                openAndPopUp(DASHBOARD_SCREEN, LOGIN_SCREEN)
             }
         )
-
     }
 }

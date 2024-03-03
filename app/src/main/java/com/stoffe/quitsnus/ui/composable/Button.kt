@@ -10,11 +10,13 @@ import androidx.compose.ui.unit.sp
 fun BasicButton(
     text: String,
     modifier: Modifier = Modifier,
-    action: () -> Unit
+    action: () -> Unit,
+    enabled: Boolean = true,
     ){
     Button(
         onClick = action,
         modifier = modifier,
+        enabled = enabled
     ){
         Text(text = text, fontSize = 16.sp)
     }
