@@ -5,10 +5,8 @@ package com.stoffe.quitsnus.dashboard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -18,26 +16,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stoffe.quitsnus.R
-import com.stoffe.quitsnus.USER_INFO_SCREEN
 import com.stoffe.quitsnus.common.Calculations
 import com.stoffe.quitsnus.common.Calculations.getLastDateSnused
 import com.stoffe.quitsnus.data.UserInfo
 import com.stoffe.quitsnus.ui.composable.ActionToolBar
 import com.stoffe.quitsnus.ui.composable.BasicButton
+import com.stoffe.quitsnus.ui.composable.BasicCard
+import com.stoffe.quitsnus.ui.composable.CardText
+import com.stoffe.quitsnus.ui.composable.CardTextTitle
+import com.stoffe.quitsnus.ui.composable.SnusHeaderText1
 
 
 @Composable
 fun DashboardScreen(
-    openAndPopUpInit: (String) -> Unit,
     openAndPopUpFail: () -> Unit,
     openSettingsScreen: () -> Unit,
     openUserInfoScreen: (String) -> Unit,
@@ -48,6 +43,9 @@ fun DashboardScreen(
         .collectAsState(null)
 
     val loading = viewModel.loading.collectAsState()
+    val pricePerDaySaved by viewModel.pricePerDaySaved.collectAsState(initial = 0.0)
+    val daysSinceUsed by viewModel.daysSinceUsed.collectAsState(initial = 0)
+    val snusNotSnused by viewModel.snusNotSnused.collectAsState(initial = 0)
 
     when (loading.value) {
         true -> DashboardLoadingScreen()
@@ -59,6 +57,9 @@ fun DashboardScreen(
                     openAndPopFail = openAndPopUpFail,
                     openUserInfoScreen = viewModel::onUserInfoActionClick,
                     openAndNavigateUserInfoScreen = openUserInfoScreen,
+                    pricePerDaySaved = pricePerDaySaved,
+                    daysSinceUsed = daysSinceUsed,
+                    snusNotSnused = snusNotSnused,
                 )
             }
     }
@@ -71,22 +72,10 @@ fun DashboardScreenContent(
     openAndPopFail: () -> Unit,
     openUserInfoScreen: ((String) -> Unit, UserInfo) -> Unit,
     openAndNavigateUserInfoScreen: (String) -> Unit,
+    pricePerDaySaved: Double,
+    daysSinceUsed: Long,
+    snusNotSnused: Int,
 ) {
-    var pricePerDaySaved = 0.0
-    if (userInfo.dosorPerDag.isNotEmpty() && userInfo.prisPerDosa.isNotEmpty()) {
-        pricePerDaySaved = Calculations.calculateMoneySavedPerDay(
-            packagesPerDay = userInfo.dosorPerDag.toDouble(),
-            packageCost = userInfo.prisPerDosa.toDouble()
-        )
-    }
-
-    val daysSinceUsed = Calculations.calculateDateDifference(getLastDateSnused(userInfo.fails,userInfo.createdAt).toString())
-
-    val snusNotSnused = Calculations.calculateSnusedNotUsed(
-        userInfo.prillorPerDosa.toInt(),
-        userInfo.dosorPerDag.toDouble(),
-        daysSinceUsed.toInt()
-    )
 
     val moneySaved = (daysSinceUsed * pricePerDaySaved).toInt()
 
@@ -101,87 +90,31 @@ fun DashboardScreenContent(
             endActionIcon = R.drawable.ic_settings_24,
             endAction = { openScreen() }
         )
-        Text(
-            text = "Du har inte snusat på $daysSinceUsed dagar, Grattis!",
-            fontWeight = FontWeight.Bold,
-            fontSize = 34.sp,
-            lineHeight = TextUnit(34f, TextUnitType.Sp),
-            textAlign = TextAlign.Center
+
+        SnusHeaderText1(
+            text = "Du har inte snusat på $daysSinceUsed dagar, Grattis!"
         )
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-
-            ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Du hade egentligen snusat $snusNotSnused prillor")
-                Text(text = "Detta har sparat dig $moneySaved :-")
-            }
-
+        BasicCard {
+            CardText(text = "Du hade egentligen snusat $snusNotSnused prillor")
+            CardText(text = "Detta har sparat dig $moneySaved :-")
         }
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+
+        BasicCard(
             onClick = {
                 openUserInfoScreen(openAndNavigateUserInfoScreen, userInfo)
             }
-
         ) {
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Dosor per dag " + userInfo.dosorPerDag)
-                Text(text = "Prillor per dosa " + userInfo.prillorPerDosa)
-                Text(text = "Pris per dosa " + userInfo.prisPerDosa)
-            }
+            CardText(text = "Dosor per dag " + userInfo.dosorPerDag)
+            CardText(text = "Prillor per dosa " + userInfo.prillorPerDosa)
+            CardText(text = "Pris per dosa " + userInfo.prisPerDosa)
         }
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "Såhär mycket sparar du",
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "${pricePerDaySaved.toInt()}:- Per dag",
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = (pricePerDaySaved * 7).toInt().toString() + ":- Per vecka",
-                    textAlign = TextAlign.Center
-                )
-
-                Text(
-                    text = (pricePerDaySaved * 31).toInt().toString() + ":- Per månad",
-                    textAlign = TextAlign.Center
-                )
-
-                Text(
-                    text = (pricePerDaySaved * 365).toInt().toString() + ":- Per år",
-                    textAlign = TextAlign.Center
-                )
-            }
-
+        BasicCard {
+            CardTextTitle(text = "Såhär mycket sparar du")
+            CardText(text = "${pricePerDaySaved.toInt()}:- Per dag")
+            CardText(text = (pricePerDaySaved * 7).toInt().toString() + ":- Per vecka")
+            CardText(text = (pricePerDaySaved * 31).toInt().toString() + ":- Per månad")
+            CardText(text = (pricePerDaySaved * 365).toInt().toString() + ":- Per år")
         }
 
         BasicButton(

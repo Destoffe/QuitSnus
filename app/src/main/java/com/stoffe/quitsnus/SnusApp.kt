@@ -79,16 +79,10 @@ fun NavGraphBuilder.quitSnusGraph(appState: SnusAppState) {
 
     composable(DASHBOARD_SCREEN) {
         DashboardScreen(
-            openAndPopUpInit = {
-                appState.navigateAndPopUp(
-                    it,
-                    DASHBOARD_SCREEN
-                )
-            },
-            openSettingsScreen = { appState.navigate(SETTINGS_SCREEN) },
             openAndPopUpFail = {
                 appState.navigate(FAIL_SCREEN)
             },
+            openSettingsScreen = { appState.navigate(SETTINGS_SCREEN) },
             openUserInfoScreen = {
                 appState.navigate(it)
             }
